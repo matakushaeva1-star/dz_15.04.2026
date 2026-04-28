@@ -1,0 +1,48 @@
+from sqlalchemy import create_engine, Column, Integer, String
+from sqlalchemy.orm import sessionmaker, declarative_base
+
+Base = declarative_base()
+
+class Author(Base):
+    __tablename__ = 'authors'
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String)
+
+    def __repr__(self):
+        return f"Author(id={self.id}, name='{self.name}')"
+
+class LibraryManager:
+    def __init__(self, db_path):
+        # Создаем движок
+        self.engine = create_engine(f'sqlite:///{db_path}')
+        # Создаем таблицы
+        Base.metadata.create_all(self.engine)
+        # Инициализируем сессию
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
+    def add_author(self, name):
+        new_author = Author(name=name)
+        self.session.add(new_author)
+        self.session.commit()
+
+    def get_all_authors(self):
+        return self.session.query(Author).all()
+
+    # Поиск автора по ID
+    def find_author_by_id(self, author_id):
+        return self.session.query(Author).get(author_id)
+
+    # Обновление имени автора
+    def update_author(self, author_id, new_name):
+        author = self.find_author_by_id(author_id)
+        if author:
+            author.name = new_name
+            self.session.commit()
+
+    # Удаление автора
+    def delete_author(self, author_id):
+        author = self.find_author_by_id(author_id)
+        if author:
+            self.session.delete(author)
+            self.session.commit()
