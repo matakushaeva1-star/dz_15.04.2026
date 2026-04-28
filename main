@@ -1,0 +1,33 @@
+from models import LibraryManager
+
+def main():
+    #Создаем экземпляр LibraryManager
+    manager = LibraryManager('database.db')
+
+    #Вызываем методы add_author несколько раз
+    manager.add_author("Лев Толстой")
+    manager.add_author("Антон Чехов")
+    manager.add_author("Александр Пушкин")
+
+    #Вызываем get_all_authors и печатаем результат
+    print(f"Список всех авторов:")
+    authors = manager.get_all_authors()
+    for author in authors:
+        print(author)
+
+    #Вызываем find_author_by_id и печатаем найденного автора
+    print(f"Поиск автора с ID 1:")
+    found_author = manager.find_author_by_id(1)
+    print(found_author)
+
+    # Вызываем update_author для одного из авторов
+    print(f"Обновляем имя автора с ID 2")
+    manager.update_author(2, "А.П. Чехов (изменено)")
+
+    #Вызываем get_all_authors, чтобы увидеть изменения
+    print(f"Обновленный список авторов:")
+    for author in manager.get_all_authors():
+        print(author)
+
+if __name__ == "__main__":
+    main()
